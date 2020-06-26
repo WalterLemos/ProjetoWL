@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.cythera.ProjetoWL.domain.Categoria;
 import com.cythera.ProjetoWL.repositories.CategoriaRepository;
+import com.cythera.ProjetoWL.services.exceptions.ObjectNotFoundException;
+
+
 
 @Service
 public class CategoriaService {
@@ -18,7 +21,8 @@ public class CategoriaService {
 		
 		Optional<Categoria> obj = repo.findById(id);
 		
-		return obj.orElse(null);
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 		
 		
 		
