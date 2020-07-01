@@ -1,5 +1,6 @@
 package com.cythera.ProjetoWL;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,12 @@ import com.cythera.ProjetoWL.domain.Cidade;
 import com.cythera.ProjetoWL.domain.Cliente;
 import com.cythera.ProjetoWL.domain.Endereco;
 import com.cythera.ProjetoWL.domain.Estado;
+import com.cythera.ProjetoWL.domain.Pagamento;
+import com.cythera.ProjetoWL.domain.PagamentoComBoleto;
+import com.cythera.ProjetoWL.domain.PagamentoComCartao;
+import com.cythera.ProjetoWL.domain.Pedido;
 import com.cythera.ProjetoWL.domain.Produto;
+import com.cythera.ProjetoWL.domain.enums.EstadoPagamento;
 import com.cythera.ProjetoWL.domain.enums.TipoCliente;
 import com.cythera.ProjetoWL.domain.enums.TipoEndereco;
 import com.cythera.ProjetoWL.repositories.CategoriaRepository;
@@ -20,6 +26,8 @@ import com.cythera.ProjetoWL.repositories.CidadeRepository;
 import com.cythera.ProjetoWL.repositories.ClienteRepository;
 import com.cythera.ProjetoWL.repositories.EnderecoRepository;
 import com.cythera.ProjetoWL.repositories.EstadoRepository;
+import com.cythera.ProjetoWL.repositories.PagamentoRepository;
+import com.cythera.ProjetoWL.repositories.PedidoRepository;
 import com.cythera.ProjetoWL.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -42,6 +50,12 @@ public class ProjetoWlApplication implements CommandLineRunner {
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	
 
@@ -73,6 +87,17 @@ public class ProjetoWlApplication implements CommandLineRunner {
 	    Endereco end1 = new Endereco(null, "Rua Flores", 300, "Apto 303", "Jardim", "38220834", cli1, c1,TipoEndereco.RESIDENCIAL);
 	    Endereco end2 = new Endereco(null, "Avenida Matos", 105, "Sala 800", "centro", "38777012", cli1, c2,TipoEndereco.COMERCIAL);
 	    
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	    
+	    Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, end1);
+	    Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, end2);
+	    
+	    Pagamento pagto1 = new PagamentoComCartao(null,EstadoPagamento.QUITADO, ped1, 6);
+	    ped1.setPagamento(pagto1);  
+	    
+	    Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+	    ped2.setPagamento(pagto2);
+	   
 	    
 	    cat1.getProdutos().addAll(Arrays.asList(p1, p2, p3));
 	    cat2.getProdutos().addAll(Arrays.asList( p2));
@@ -86,6 +111,7 @@ public class ProjetoWlApplication implements CommandLineRunner {
 	    
 	    cli1.getTelefones().addAll(Arrays.asList("27363323","93838393"));
 	    cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+	    cli1.getPedidos().addAll(Arrays.asList(ped1,ped2));
 	    
 	    
 		/* Repository*/
@@ -99,7 +125,8 @@ public class ProjetoWlApplication implements CommandLineRunner {
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(end1, end2));
 		
-		
+		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1,pagto2));
 		
  
 		
