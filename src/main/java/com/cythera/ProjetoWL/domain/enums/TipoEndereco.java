@@ -40,10 +40,10 @@ public enum TipoEndereco {
 			}
 			
 			
-			throw new IllegalArgumentException("Id inválido" + cod);
+		
 		}
 		
-		return null;
+		throw new IllegalArgumentException("Id inválido" + cod);
 		
 		
 		
